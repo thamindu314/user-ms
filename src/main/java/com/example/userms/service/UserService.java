@@ -27,13 +27,32 @@ public class UserService {
 
     public User getUserByID(int id) {
         Optional<User> user = userRepository.findById(id);
-        if (user.isPresent()) {
-            return user.get();
-        }
-        return null;
+        return user.orElse(null);
     }
 
-    public List<User> getUserIdByRoleAndEmailOrPhoneNo(String role, String email, String phone_no){
-        return userRepository.findUserIdByRoleAndEmailOrPhoneNo(role, email, phone_no);
+    public List<User> findUserIdByRoleAndEmailOrPhoneNo(String role, String identifier){
+        return userRepository.findUserIdByRoleAndEmailOrPhoneNo(role, identifier);
     }
+
+    public void updateEmailAndPhoneNoByUserID(int id,String email,String phone_no){
+        userRepository.updateEmailAndPhoneNoByUserID(id, email,phone_no);
+    }
+
+    public User updatePasswordByUserID(int id, String password){
+        User user= userRepository.findById(id).orElse(null);
+        if(user==null){
+            return null;
+        }
+        user.setPassword(password);
+        return userRepository.save(user);
+    }
+
+    public boolean userLogIn(String role, String identifier, String password) {
+        // Check if the identifier is a valid email or phone number
+        User user = userRepository.findUserIdByRoleAndEmailOrPhoneNo(role, identifier).stream().findFirst().orElse(null);
+
+        // Check if the user exists and the password matches
+        return user != null && user.getPassword().equals(password); // Authentication successful
+    }
+
 }

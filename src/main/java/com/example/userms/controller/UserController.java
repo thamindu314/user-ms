@@ -5,8 +5,8 @@ import com.example.userms.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class UserController {
@@ -37,8 +37,29 @@ public class UserController {
         return userService.getUserByID(id);
     }
 
-    @GetMapping(path = "/users", params = {"role","email","phone_no"})
-    public List<User> getUserIdByRoleAndEmailOrPhoneNo(@RequestParam String role,@RequestParam String email,@RequestParam String phone_no){
-        return userService.getUserIdByRoleAndEmailOrPhoneNo(role, email, phone_no);
+    @PostMapping(path = "/users/login")
+    public List<User> userLogIn( @RequestBody Map<String,String> requestBody){
+        String role = requestBody.get("role");
+        String identifier = requestBody.get("identifier");
+        String password = requestBody.get("password");
+        boolean authentication= userService.userLogIn(role, identifier, password);
+        if(authentication){
+            return userService.findUserIdByRoleAndEmailOrPhoneNo(role, identifier);
+
+        }
+        else{
+            return null;
+        }
+    }
+
+    @PutMapping(path = "/users/{id}")
+    public void updateEmailAndPhoneNoByUserID(@PathVariable int id,@RequestBody String email,String phone_no){
+        userService.updateEmailAndPhoneNoByUserID(id, email, phone_no);
+    }
+
+    @PatchMapping(path = "/users/{id}")
+    public User updatePasswordByUserID(@PathVariable int id, @RequestBody Map<String,String> requestBody){
+        String password = requestBody.get("password");
+        return userService.updatePasswordByUserID(id, password);
     }
 }
