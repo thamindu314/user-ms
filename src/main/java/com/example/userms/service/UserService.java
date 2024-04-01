@@ -2,7 +2,7 @@ package com.example.userms.service;
 
 import com.example.userms.data.User;
 import com.example.userms.data.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,8 +10,11 @@ import java.util.Optional;
 
 @Service
 public class UserService {
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     public void deleteUser(int id) {
         userRepository.deleteById(id);
@@ -34,8 +37,14 @@ public class UserService {
         return userRepository.findUserIdByRoleAndEmailOrPhoneNo(role, identifier);
     }
 
-    public void updateEmailAndPhoneNoByUserID(int id,String email,String phone_no){
-        userRepository.updateEmailAndPhoneNoByUserID(id, email,phone_no);
+    public User updateEmailAndPhoneNoByUserID(int id,String email,String phone_no){
+        User user= userRepository.findById(id).orElse(null);
+        if(user==null){
+            return null;
+        }
+        user.setEmail(email);
+        user.setPhone_no(phone_no);
+        return userRepository.save(user);
     }
 
     public User updatePasswordByUserID(int id, String password){

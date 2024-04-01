@@ -2,7 +2,6 @@ package com.example.userms.controller;
 
 import com.example.userms.data.User;
 import com.example.userms.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,8 +10,11 @@ import java.util.Map;
 @RestController
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @PostMapping(path="/users")
     public User createUser(@RequestBody User user)
@@ -52,12 +54,14 @@ public class UserController {
         }
     }
 
-    @PutMapping(path = "/users/{id}")
-    public void updateEmailAndPhoneNoByUserID(@PathVariable int id,@RequestBody String email,String phone_no){
-        userService.updateEmailAndPhoneNoByUserID(id, email, phone_no);
+    @PatchMapping(path = "/users/{id}")
+    public User updateEmailAndPhoneNoByUserID(@PathVariable int id,@RequestBody Map<String,String> requestBody){
+        String email = requestBody.get("email");
+        String phone_no = requestBody.get("phone_no");
+        return userService.updateEmailAndPhoneNoByUserID(id, email, phone_no);
     }
 
-    @PatchMapping(path = "/users/{id}")
+    @PatchMapping(path = "/users/{id}/password")
     public User updatePasswordByUserID(@PathVariable int id, @RequestBody Map<String,String> requestBody){
         String password = requestBody.get("password");
         return userService.updatePasswordByUserID(id, password);
