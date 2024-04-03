@@ -2,7 +2,7 @@ package com.example.userms.controller;
 
 import com.example.userms.data.User;
 import com.example.userms.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,7 +41,7 @@ public class UserController {
     }
 
     @PostMapping(path = "/users/login")
-    public List<User> userLogIn( @RequestBody Map<String,String> requestBody){
+    public List<User> userLogIn(@RequestBody Map<String,String> requestBody){
         String role = requestBody.get("role");
         String identifier = requestBody.get("identifier");
         String password = requestBody.get("password");
@@ -62,9 +62,10 @@ public class UserController {
         return userService.updateEmailAndPhoneNoByUserId(id, email, phone_no);
     }
 
-    @PatchMapping(path = "/users/{id}/password")
+    @PatchMapping(path = "/users/{id}/reset_password")
     public User updatePasswordByUserId(@PathVariable int id, @RequestBody Map<String,String> requestBody){
         String password = requestBody.get("password");
         return userService.updatePasswordByUserId(id, password);
     }
+
 }
