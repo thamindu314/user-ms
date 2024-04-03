@@ -16,7 +16,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public void deleteUser(int id) {
+    public void deleteUserById(int id) {
         userRepository.deleteById(id);
     }
 
@@ -28,7 +28,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User getUserByID(int id) {
+    public User getUserById(int id) {
         Optional<User> user = userRepository.findById(id);
         return user.orElse(null);
     }
@@ -37,7 +37,7 @@ public class UserService {
         return userRepository.findUserIdByRoleAndEmailOrPhoneNo(role, identifier);
     }
 
-    public User updateEmailAndPhoneNoByUserID(int id,String email,String phone_no){
+    public User updateEmailAndPhoneNoByUserId(int id,String email,String phone_no){
         User user= userRepository.findById(id).orElse(null);
         if(user==null){
             return null;
@@ -47,7 +47,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User updatePasswordByUserID(int id, String password){
+    public User updatePasswordByUserId(int id, String password){
         User user= userRepository.findById(id).orElse(null);
         if(user==null){
             return null;

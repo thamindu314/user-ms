@@ -2,6 +2,7 @@ package com.example.userms.controller;
 
 import com.example.userms.data.User;
 import com.example.userms.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,9 +24,9 @@ public class UserController {
     }
 
     @DeleteMapping(path = "/users/{id}")
-    public void deleteUser(@PathVariable int id)
+    public void deleteUserById(@PathVariable int id)
     {
-        userService.deleteUser(id);
+        userService.deleteUserById(id);
     }
 
     @PutMapping(path="/users")
@@ -35,8 +36,8 @@ public class UserController {
     }
 
     @GetMapping(path = "/users/{id}")
-    public User getUserByID(@PathVariable int id){
-        return userService.getUserByID(id);
+    public User getUserById(@PathVariable int id){
+        return userService.getUserById(id);
     }
 
     @PostMapping(path = "/users/login")
@@ -55,15 +56,15 @@ public class UserController {
     }
 
     @PatchMapping(path = "/users/{id}")
-    public User updateEmailAndPhoneNoByUserID(@PathVariable int id,@RequestBody Map<String,String> requestBody){
+    public User updateEmailAndPhoneNoByUserId(@PathVariable int id,@RequestBody Map<String,String> requestBody){
         String email = requestBody.get("email");
         String phone_no = requestBody.get("phone_no");
-        return userService.updateEmailAndPhoneNoByUserID(id, email, phone_no);
+        return userService.updateEmailAndPhoneNoByUserId(id, email, phone_no);
     }
 
     @PatchMapping(path = "/users/{id}/password")
-    public User updatePasswordByUserID(@PathVariable int id, @RequestBody Map<String,String> requestBody){
+    public User updatePasswordByUserId(@PathVariable int id, @RequestBody Map<String,String> requestBody){
         String password = requestBody.get("password");
-        return userService.updatePasswordByUserID(id, password);
+        return userService.updatePasswordByUserId(id, password);
     }
 }
