@@ -2,7 +2,7 @@ package com.example.userms.service;
 
 import com.example.userms.data.User;
 import com.example.userms.data.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,10 +10,13 @@ import java.util.Optional;
 
 @Service
 public class UserService {
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    public void deleteUser(int id) {
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    public void deleteUserById(int id) {
         userRepository.deleteById(id);
     }
 
@@ -25,7 +28,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User getUserByID(int id) {
+    public User getUserById(int id) {
         Optional<User> user = userRepository.findById(id);
         return user.orElse(null);
     }
@@ -34,11 +37,17 @@ public class UserService {
         return userRepository.findUserIdByRoleAndEmailOrPhoneNo(role, identifier);
     }
 
-    public void updateEmailAndPhoneNoByUserID(int id,String email,String phone_no){
-        userRepository.updateEmailAndPhoneNoByUserID(id, email,phone_no);
+    public User updateEmailAndPhoneNoByUserId(int id,String email,String phone_no){
+        User user= userRepository.findById(id).orElse(null);
+        if(user==null){
+            return null;
+        }
+        user.setEmail(email);
+        user.setPhone_no(phone_no);
+        return userRepository.save(user);
     }
 
-    public User updatePasswordByUserID(int id, String password){
+    public User updatePasswordByUserId(int id, String password){
         User user= userRepository.findById(id).orElse(null);
         if(user==null){
             return null;

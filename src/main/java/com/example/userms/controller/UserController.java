@@ -2,7 +2,7 @@ package com.example.userms.controller;
 
 import com.example.userms.data.User;
 import com.example.userms.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,8 +12,11 @@ import java.util.Map;
 @RestController
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @PostMapping(path="/users")
     public User createUser(@RequestBody User user)
@@ -22,9 +25,9 @@ public class UserController {
     }
 
     @DeleteMapping(path = "/users/{id}")
-    public void deleteUser(@PathVariable int id)
+    public void deleteUserById(@PathVariable int id)
     {
-        userService.deleteUser(id);
+        userService.deleteUserById(id);
     }
 
     @PutMapping(path="/users")
@@ -34,12 +37,12 @@ public class UserController {
     }
 
     @GetMapping(path = "/users/{id}")
-    public User getUserByID(@PathVariable int id){
-        return userService.getUserByID(id);
+    public User getUserById(@PathVariable int id){
+        return userService.getUserById(id);
     }
 
     @PostMapping(path = "/users/login")
-    public List<User> userLogIn( @RequestBody Map<String,String> requestBody){
+    public List<User> userLogIn(@RequestBody Map<String,String> requestBody){
         String role = requestBody.get("role");
         String identifier = requestBody.get("identifier");
         String password = requestBody.get("password");
@@ -53,14 +56,17 @@ public class UserController {
         }
     }
 
-    @PutMapping(path = "/users/{id}")
-    public void updateEmailAndPhoneNoByUserID(@PathVariable int id,@RequestBody String email,String phone_no){
-        userService.updateEmailAndPhoneNoByUserID(id, email, phone_no);
+    @PatchMapping(path = "/users/{id}")
+    public User updateEmailAndPhoneNoByUserId(@PathVariable int id,@RequestBody Map<String,String> requestBody){
+        String email = requestBody.get("email");
+        String phone_no = requestBody.get("phone_no");
+        return userService.updateEmailAndPhoneNoByUserId(id, email, phone_no);
     }
 
-    @PatchMapping(path = "/users/{id}")
-    public User updatePasswordByUserID(@PathVariable int id, @RequestBody Map<String,String> requestBody){
+    @PatchMapping(path = "/users/{id}/reset_password")
+    public User updatePasswordByUserId(@PathVariable int id, @RequestBody Map<String,String> requestBody){
         String password = requestBody.get("password");
-        return userService.updatePasswordByUserID(id, password);
+        return userService.updatePasswordByUserId(id, password);
     }
+
 }
